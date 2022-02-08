@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { Grid } from "./components/game/Grid";
 
 function App() {
+  const [guess, setGuess] = React.useState<string>("");
+  const [saved, setSaved] = React.useState<string[]>(["", "", "", "", ""]);
+  const [hints, setHints] = React.useState<number[][]>([]);
+  const [used, setUsed] = React.useState(() => new Set<string>());
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}>
+        <Grid
+          setHints={setHints}
+          setSaved={setSaved}
+          guess={guess}
+          setGuess={setGuess}
+          setUsed={setUsed}
+          hints={hints}
+          saved={saved}
+        />
+      </div>
     </div>
   );
 }
