@@ -88,7 +88,7 @@ export const useKey = ({
     setHints((prev) => [...prev, result]);
 
     if (hints.length === 4) {
-      alert("You lose! The word was RAILS");
+      alert(`You lose! The word was ${word.toUpperCase()}`);
 
       setTimeout(() => {
         setSaved(["", "", "", "", ""]);
