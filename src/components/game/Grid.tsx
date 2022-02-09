@@ -11,6 +11,8 @@ interface GridProps {
   setHints: React.Dispatch<React.SetStateAction<number[][]>>;
   setUsed: React.Dispatch<React.SetStateAction<any>>; // TODO: any type
   setSaved: React.Dispatch<React.SetStateAction<string[]>>;
+  count: number;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const StyledGrid = styled.div`
@@ -28,10 +30,10 @@ export const Grid: React.FC<GridProps> = ({
   hints,
   setSaved,
   setHints,
+  count,
+  setCount,
   saved,
 }) => {
-  const [count, setCount] = React.useState<number>(0); // represents the level currently working on in the grid
-
   const [keyCallback] = useKey({
     guess,
     setGuess,
@@ -39,6 +41,7 @@ export const Grid: React.FC<GridProps> = ({
     count,
     setCount,
     setHints,
+    setUsed,
     setSaved,
   });
 
@@ -74,36 +77,49 @@ export const Grid: React.FC<GridProps> = ({
   };
 
   return (
-    <StyledGrid>
-      {saved.map((value, index) => (
-        <div key={index}>
-          <Cell
-            word={handleGuess(0)}
-            index={index}
-            background={handleBackground(0, index)}
-          />
-          <Cell
-            word={handleGuess(1)}
-            index={index}
-            background={handleBackground(1, index)}
-          />
-          <Cell
-            word={handleGuess(2)}
-            index={index}
-            background={handleBackground(2, index)}
-          />
-          <Cell
-            word={handleGuess(3)}
-            index={index}
-            background={handleBackground(3, index)}
-          />
-          <Cell
-            word={handleGuess(4)}
-            index={index}
-            background={handleBackground(4, index)}
-          />
-        </div>
-      ))}
-    </StyledGrid>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexGrow: 1,
+      }}>
+      <StyledGrid>
+        {saved.map((value, index) => (
+          <div key={index}>
+            <Cell
+              word={handleGuess(0)}
+              index={index}
+              isActive={count === 0}
+              background={handleBackground(0, index)}
+            />
+            <Cell
+              word={handleGuess(1)}
+              index={index}
+              isActive={count === 1}
+              background={handleBackground(1, index)}
+            />
+            <Cell
+              word={handleGuess(2)}
+              index={index}
+              isActive={count === 2}
+              background={handleBackground(2, index)}
+            />
+            <Cell
+              word={handleGuess(3)}
+              isActive={count === 3}
+              index={index}
+              background={handleBackground(3, index)}
+            />
+            <Cell
+              word={handleGuess(4)}
+              isActive={count === 4}
+              index={index}
+              background={handleBackground(4, index)}
+            />
+          </div>
+        ))}
+      </StyledGrid>
+    </div>
   );
 };

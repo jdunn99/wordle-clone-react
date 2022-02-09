@@ -3,17 +3,22 @@ import React from "react";
 
 interface StyledCellProps {
   background?: string;
+  isActive?: boolean;
 }
 
 interface CellProps {
   word: string;
   index: number;
   background?: string;
+  isActive?: boolean; // means the cell rendered is in the guess row
 }
 
 const StyledCell = styled.div<StyledCellProps>`
   background: ${(props) => (props.background ? props.background : `#0f0e11`)};
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: ${({ isActive }) =>
+    isActive
+      ? "1px solid rgba(255, 255, 255, 0.45)"
+      : "1px solid rgba(255, 255, 255, 0.1)"};
   border-radius: 0.5rem;
   width: 100px;
   height: 100px;
@@ -34,9 +39,16 @@ const StyledCell = styled.div<StyledCellProps>`
 /**
  * Renders a letter of empty space in the grid
  */
-export const Cell: React.FC<CellProps> = ({ word, index, background }) => {
-  return word[index] !== "" ? (
-    <StyledCell background={background}>{word[index]}</StyledCell>
+export const Cell: React.FC<CellProps> = ({
+  word,
+  index,
+  background,
+  isActive,
+}) => {
+  return !!word[index] ? (
+    <StyledCell isActive={isActive} background={background}>
+      {word[index]}
+    </StyledCell>
   ) : (
     <StyledCell />
   );

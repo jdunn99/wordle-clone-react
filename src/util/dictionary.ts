@@ -1,4 +1,4 @@
-export const VALID_WORDS = new Set([
+export const VALID_WORDS = [
   "which",
   "there",
   "their",
@@ -5756,4 +5756,4 @@ export const VALID_WORDS = new Set([
   "rumba",
   "biffy",
   "pupal",
-]);
+];

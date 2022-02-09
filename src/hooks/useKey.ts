@@ -1,5 +1,7 @@
 import React from "react";
+import { UsedType } from "../App";
 import { VALID_WORDS } from "../util/dictionary";
+import { word } from "../util/generateWord";
 
 interface KeyProps {
   guess: string;
@@ -9,9 +11,8 @@ interface KeyProps {
   setGuess: React.Dispatch<React.SetStateAction<string>>;
   setSaved: React.Dispatch<React.SetStateAction<string[]>>;
   setHints: React.Dispatch<React.SetStateAction<number[][]>>; // TODO: enum
+  setUsed: React.Dispatch<React.SetStateAction<UsedType>>;
 }
-
-let word = "RAILS";
 
 export const useKey = ({
   guess,
@@ -20,16 +21,11 @@ export const useKey = ({
   setSaved,
   count,
   setCount,
+  setUsed,
   setHints,
 }: KeyProps) => {
   // TODO: Clean this up
   const handleSubmit = React.useCallback(() => {
-    if (!VALID_WORDS.has(guess.toLocaleLowerCase())) {
-      alert("Word is not valid!");
-      setGuess("");
-      return;
-    }
-
     if (guess === word) {
       setHints((hints) => [...hints, [2, 2, 2, 2, 2, 2]]);
       setSaved((saved) => {
@@ -44,6 +40,7 @@ export const useKey = ({
         setSaved(["", "", "", "", ""]);
         setGuess("");
         setHints([]);
+        setUsed({});
         setCount(0);
       }, 1000);
 
@@ -51,19 +48,35 @@ export const useKey = ({
     }
 
     if (guess.length !== 5) return;
+
+    if (!VALID_WORDS.includes(guess.toLocaleLowerCase())) {
+      alert("Word is not valid!");
+      return;
+    }
+
     let result = [0, 0, 0, 0, 0];
     const repeated = [];
+    let temp: UsedType = {};
 
     for (let i = 0; i < guess.length; ++i) {
       if (guess[i] === word[i]) {
+        temp[guess[i]] = 2;
         result[i] = 2;
         repeated.push(guess[i]);
       }
     }
 
-    for (let i = 0; i < guess.length; ++i)
-      if (word.includes(guess[i]) && !repeated.includes(guess[i]))
+    for (let i = 0; i < guess.length; ++i) {
+      if (word.includes(guess[i]) && !repeated.includes(guess[i])) {
+        temp[guess[i]] = 1;
         result[i] = 1;
+      } else {
+        temp[guess[i]] = temp[guess[i]] ? temp[guess[i]] : 0;
+      }
+    }
+
+    console.log(temp);
+    setUsed((used) => ({ ...used, ...temp }));
 
     setCount((count) => count + 1);
     setSaved((prev) => {
@@ -82,9 +95,19 @@ export const useKey = ({
         setGuess("");
         setHints([]);
         setCount(0);
+        setUsed({});
       }, 1000);
     }
-  }, [count, guess, hints.length, setCount, setGuess, setHints, setSaved]);
+  }, [
+    count,
+    guess,
+    hints.length,
+    setCount,
+    setGuess,
+    setHints,
+    setSaved,
+    setUsed,
+  ]);
 
   const callback = React.useCallback(
     (code: string, key: string) => {
